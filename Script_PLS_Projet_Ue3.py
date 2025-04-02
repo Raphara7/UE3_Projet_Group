@@ -18,7 +18,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
 # 📂 Chemin d'accès vers le fichier CSV
-file_path = r"C:\Users\schwe\Documents\Saves\Python\combined_data.csv"
+file_path = ".\combined_data.csv"
 
 # 🧪 Chargement des données
 df = pd.read_csv(file_path)
