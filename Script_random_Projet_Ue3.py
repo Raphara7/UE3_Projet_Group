@@ -17,7 +17,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 from sklearn.tree import plot_tree
 
 # 📂 Chargement des données
-file_path = r"C:\Users\schwe\Documents\Saves\Python\combined_data.csv"
+file_path = "./combined_data.csv"
 df = pd.read_csv(file_path)
 
 # 🎯 Séparation des variables
