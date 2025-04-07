@@ -1,0 +1,35 @@
+1. Perceptron avec scikit-learn
+Description :
+Le perceptron est un modèle de réseau de neurones simple à une seule couche. Il effectue une classification linéaire en ajustant les poids pour minimiser les erreurs de prédiction.
+Caractéristiques :
+Simple : Convient uniquement pour des problèmes linéairement séparables.
+Rapide : Converge rapidement pour des données simples.
+Limité : Ne peut pas résoudre des problèmes non linéaires.
+
+2. Multilayer Perceptron (MLP) avec scikit-learn
+Description :
+Le MLP est une extension du perceptron avec plusieurs couches cachées. Il peut modéliser des relations non linéaires grâce à des fonctions d'activation comme ReLU.
+
+Caractéristiques :
+Non linéaire : Peut résoudre des problèmes complexes.
+Optimisation avancée : Utilise l'algorithme Adam pour ajuster les poids.
+Plus lent : Nécessite plus de calculs que le perceptron simple.
+3. Dense Network avec PyTorch
+Description :
+Un Dense Network est un réseau de neurones entièrement connecté, implémenté ici avec PyTorch. Il offre une flexibilité totale pour définir et entraîner des modèles.
+
+Caractéristiques :
+Personnalisable : Vous définissez chaque couche et fonction d'activation.
+Puissant : Peut être utilisé pour des tâches complexes avec des données volumineuses.
+Formation manuelle : Vous devez gérer explicitement les étapes d'entraînement (rétropropagation, mise à jour des poids).
+
+4. Différences entre les méthodes
+Méthode	        Facilité d'utilisation        	Capacité à modéliser la non-linéarité	          Performance	          Flexibilité
+Perceptron        	Très simple	                              Non                                	Faible	              Faible
+MLP (scikit-learn)	Moyenne	                                  Oui	                                Bonne	                Moyenne
+Dense Network (PyTorch)	Complexe	                            Oui                              	Très bonne	          Très élevée
+
+Résumé
+Perceptron : Simple et rapide, mais limité aux problèmes linéaires.
+MLP : Plus puissant, adapté aux problèmes non linéaires, mais moins flexible.
+Dense Network : Très flexible et performant, mais nécessite plus de configuration et de calculs.
