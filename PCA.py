@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.decomposition import PCA
+from sklearn.decomposition import q
 from scipy.fft import fft
 from scipy.signal import hilbert
 import matplotlib.pyplot as plt
