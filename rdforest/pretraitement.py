@@ -24,14 +24,18 @@ df["label_encoded"] = LabelEncoder().fit_transform(df["class"])
 X_raw = df.drop(columns=["class", "label_encoded"])
 y_raw = df["label_encoded"]
 
+# === 2. Ajout de la dérivée des spectres
+X_derivative = X_raw.diff(axis=1).fillna(0)
+X_combined = pd.concat([X_raw, X_derivative.add_suffix("_deriv")], axis=1)
+
 # Affichage initial des classes
 plot_class_distribution(y_raw, "Distribution des classes - Original")
 
-# === 2. Standardisation
+# === 3. Standardisation
 scaler = StandardScaler()
-X_scaled = pd.DataFrame(scaler.fit_transform(X_raw), columns=X_raw.columns)
+X_scaled = pd.DataFrame(scaler.fit_transform(X_combined), columns=X_combined.columns)
 
-# === 3. Équilibrage par bruit léger sur classes minoritaires
+# === 4. Équilibrage par bruit léger sur classes minoritaires
 df_all = pd.concat([X_scaled, y_raw], axis=1)
 max_count = df_all["label_encoded"].value_counts().max()
 balanced_data = []
@@ -57,7 +61,7 @@ y = df_balanced["label_encoded"]
 # Affichage après équilibrage
 plot_class_distribution(y, "Distribution des classes - Après équilibrage")
 
-# === 4. Création du jeu bruité X2 à partir de X1
+# === 5. Création du jeu bruité X2 à partir de X1
 noise = np.random.normal(0, 0.05, X1.shape)
 X1_noisy = X1 + noise
 X2 = pd.concat([X1, X1_noisy])
@@ -66,7 +70,7 @@ y2 = pd.concat([y, y])
 # Affichage après ajout de bruit à tout le jeu équilibré
 plot_class_distribution(y2, "Distribution des classes - Après duplication avec bruit (X2)")
 
-# === 5. Fonction de validation croisée
+# === 6. Fonction de validation croisée
 def evaluate_model(X, y, name):
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     scoring = {
@@ -79,14 +83,14 @@ def evaluate_model(X, y, name):
               for metric in scoring}
     return pd.Series(scores, name=name)
 
-# === 6. Évaluation des modèles
-scores_1 = evaluate_model(X1, y, "Brutes équilibrées")
-scores_2 = evaluate_model(X2, y2, "Équilibrées + bruit (doublées)")
+# === 7. Évaluation des modèles
+scores_1 = evaluate_model(X1, y, "Brutes équilibrées + dérivée")
+scores_2 = evaluate_model(X2, y2, "Équilibrées + bruit (doublées) + dérivée")
 
 metrics_df = pd.concat([scores_1, scores_2], axis=1)
 print(metrics_df)
 
-# === 7. Affichage des performances (métriques en abscisse)
+# === 8. Affichage des performances
 colors = ["#4C72B0", "#55A868"]
 metrics_df.plot(kind="bar", figsize=(10, 6), color=colors)
 plt.title("Scores en validation croisée (5-fold)")
@@ -98,4 +102,3 @@ plt.legend(title="Jeu de données", loc="lower right")
 plt.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.show()
-
