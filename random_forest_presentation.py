@@ -97,6 +97,11 @@ feature_names = X_combined.columns
 top_features = feature_names[indices][:top_n]
 top_importances = importances[indices][:top_n]
 
+# Affichage de la liste des variables et de leur importance
+print("Les 20 variables les plus discriminantes :")
+for feature, importance in zip(top_features, top_importances):
+    print(f"{feature} : {importance}")
+
 plt.figure(figsize=(10, 6))
 sns.barplot(x=top_importances, y=top_features)
 plt.title("Importance des 20 variables les plus discriminantes")
@@ -104,6 +109,7 @@ plt.xlabel("Importance")
 plt.ylabel("Variable")
 plt.tight_layout()
 plt.show()
+
 
 # ============================
 # 9. Evaluation de l'accuracy en fonction du nombre d'arbres
