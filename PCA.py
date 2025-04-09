@@ -1,10 +1,11 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.decomposition import q
+from sklearn.decomposition import PCA
 from scipy.fft import fft
 from scipy.signal import hilbert
 import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
 
 # --- Chargement et préparation des données ---
 df = pd.read_csv("combined_data.csv")
@@ -71,12 +72,30 @@ X_deriv_scaled = scaler_deriv.fit_transform(X_deriv)
 pca_deriv = PCA(n_components=2)
 X_deriv_pca = pca_deriv.fit_transform(X_deriv_scaled)
 
+# Clustering avec KMeans
+kmeans = KMeans(n_clusters=len(np.unique(y)), random_state=42)
+clusters = kmeans.fit_predict(X_deriv_pca)
+
 plt.figure()
-plt.scatter(X_deriv_pca[:, 0], X_deriv_pca[:, 1], c=y, cmap='viridis', alpha=0.7)
-plt.title("PCA sur données dérivées")
+plt.scatter(X_deriv_pca[:, 0], X_deriv_pca[:, 1], c=clusters, cmap='viridis', alpha=0.7)
+
+# Ajout des cercles et des noms des classes
+unique_classes = np.unique(y)
+for cls in unique_classes:
+    class_points = X_deriv_pca[y == cls]
+    mean_x, mean_y = class_points[:, 0].mean(), class_points[:, 1].mean()
+    plt.scatter(mean_x, mean_y, s=200, facecolors='none', edgecolors='red', label=f'Classe {cls}')
+    plt.text(mean_x, mean_y, f'Classe {cls}', color='red', fontsize=10, ha='center', va='center')
+
+# Ajout des centres des clusters
+for i, center in enumerate(kmeans.cluster_centers_):
+    plt.scatter(center[0], center[1], s=300, c='black', marker='X', label=f'Cluster {i}')
+
+plt.title("Clustering PCA sur données dérivées")
 plt.xlabel("PC1")
 plt.ylabel("PC2")
 plt.colorbar()
+plt.legend()
 plt.show()
 
 # === 5. PCA sur la concaténation de toutes les représentations ===

@@ -22,6 +22,9 @@ for i, cls in enumerate(classes):
     for _, row in subset.iterrows():
         plt.plot(spectre_columns, row[spectre_columns], color=colors[i], alpha=0.5, label=cls if _ == subset.index[0] else "")
 
+# Ajouter une ligne verticale à 500 nm
+plt.axvline(x=500, color='red', linestyle='--', label='500 nm')
+
 # Ajouter des légendes et des titres
 plt.title("Visualisation des spectres par classe")
 plt.xlabel("Longueur d'onde")
@@ -47,6 +50,8 @@ for i, cls in enumerate(classes):
     for _, row in subset.iterrows():
         derivative = np.gradient(row[spectre_columns].values.astype(float))
         plt.plot(spectre_columns, derivative, color=colors[i], alpha=0.5, label=cls if _ == subset.index[0] else "")
+# Ajouter une ligne verticale à 500 nm
+plt.axvline(x=1, color='red', linestyle='--', label='500 nm')
 plt.title("Dérivées des spectres par classe")
 plt.xlabel("Longueur d'onde")
 plt.ylabel("Dérivée")
@@ -63,6 +68,8 @@ for i, cls in enumerate(classes):
     for _, row in subset.iterrows():
         second_derivative = np.gradient(np.gradient(row[spectre_columns].values.astype(float)))
         plt.plot(spectre_columns, second_derivative, color=colors[i], alpha=0.5, label=cls if _ == subset.index[0] else "")
+# Ajouter une ligne verticale à 500 nm
+plt.axvline(x=500, color='red', linestyle='--', label='500 nm')
 plt.title("Dérivées secondes des spectres par classe")
 plt.xlabel("Longueur d'onde")
 plt.ylabel("Dérivée seconde")
