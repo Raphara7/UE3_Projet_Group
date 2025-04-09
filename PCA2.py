@@ -29,9 +29,12 @@ X_deriv_scaled = scaler_deriv.fit_transform(X_deriv)
 pca_deriv = PCA(n_components=2)
 X_deriv_pca = pca_deriv.fit_transform(X_deriv_scaled)
 
-# Define cluster labels and colors based on existing classes
+# Récupérer les noms des classes originales
+class_names = LabelEncoder().fit(df["class"]).classes_
+
+# Define cluster labels and colors based on existing class names
 unique_classes = np.unique(y)
-cluster_labels = [f"Class {cls}" for cls in unique_classes]
+cluster_labels = [class_names[cls] for cls in unique_classes]
 colors = plt.cm.tab10(np.linspace(0, 1, len(unique_classes)))
 
 # Plot PCA with class-guided clusters and ellipses
