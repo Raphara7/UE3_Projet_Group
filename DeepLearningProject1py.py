@@ -125,7 +125,7 @@ splits = [0.2, 0.3, 0.4]
 # Iterate through each test size
 for split in splits:
     # Split the data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X2, y2, test_size=split, random_state=42, stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(X2, y2, test_size=split, random_state=42, stratify=y2)
     
     # Normalize the features
     scaler = StandardScaler()
@@ -239,9 +239,9 @@ qqhidden_size = 100
 output_size = len(y.unique())
 
 model = nn.Sequential(
-    nn.Linear(input_size, hidden_size),
+    nn.Linear(input_size, qqhidden_size),
     nn.ReLU(),
-    nn.Linear(hidden_size, output_size),
+    nn.Linear(qqhidden_size, output_size),
     nn.Softmax(dim=1)
 ).to(device)
 

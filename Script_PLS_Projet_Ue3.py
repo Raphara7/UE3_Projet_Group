@@ -138,3 +138,5 @@ plt.ylabel("Accuracy moyenne (CV 5-fold)")
 plt.grid(True)
 plt.tight_layout()
 plt.show()
+
+
