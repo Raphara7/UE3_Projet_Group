@@ -53,7 +53,7 @@ for i, (cls, color) in enumerate(zip(unique_classes, colors)):
         ellipse = Ellipse(xy=mean, width=width, height=height, angle=angle, edgecolor=color, facecolor='none', linewidth=2)
         plt.gca().add_patch(ellipse)
 
-plt.title("PCA sur les dérivées")
+plt.title("PCA on derivatives")
 plt.xlabel("Dim1 (PC1)")
 plt.ylabel("Dim2 (PC2)")
 plt.axhline(0, color='black', linestyle='--', linewidth=0.8)
