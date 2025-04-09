@@ -31,6 +31,125 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
+
+
+
+
+
+
+# === 1. Chargement des données
+df = pd.read_csv("combined_data.csv")
+df["label_encoded"] = LabelEncoder().fit_transform(df["class"])
+X_raw = df.drop(columns=["class", "label_encoded"])
+y_raw = df["label_encoded"]
+
+import matplotlib.pyplot as plt
+
+def plot_class_distribution(y_series, title):
+    """
+    Plots the distribution of classes in the target variable.
+
+    Parameters:
+    - y_series: Pandas Series or array-like, the target variable.
+    - title: str, the title of the plot.
+    """
+    counts = y_series.value_counts().sort_index()
+    counts.index = [f"Class {i}" for i in counts.index]
+    counts.plot(kind="bar", figsize=(8, 5), edgecolor="black")
+    plt.title(title)
+    plt.xlabel("Class")
+    plt.ylabel("Number of Samples")
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+# Affichage initial des classes
+plot_class_distribution(y_raw, "Distribution des classes - Original")
+
+# === 2. Standardisation
+scaler = StandardScaler()
+X_scaled = pd.DataFrame(scaler.fit_transform(X_raw), columns=X_raw.columns)
+
+# === 3. Équilibrage par bruit léger sur classes minoritaires
+df_all = pd.concat([X_scaled, y_raw], axis=1)
+max_count = df_all["label_encoded"].value_counts().max()
+balanced_data = []
+
+for label in df_all["label_encoded"].unique():
+    class_subset = df_all[df_all["label_encoded"] == label]
+    n_to_generate = max_count - len(class_subset)
+    
+    if n_to_generate > 0:
+        synthetic_samples = class_subset.sample(n=n_to_generate, replace=True, random_state=42)
+        noise = np.random.normal(0, 0.05, synthetic_samples.drop(columns=["label_encoded"]).shape)
+        synthetic_samples.iloc[:, :-1] += noise
+        class_subset = pd.concat([class_subset, synthetic_samples])
+    
+    balanced_data.append(class_subset)
+
+df_balanced = pd.concat(balanced_data)
+df_balanced = shuffle(df_balanced, random_state=42)
+
+X1 = df_balanced.drop(columns=["label_encoded"])
+y = df_balanced["label_encoded"]
+
+# Affichage après équilibrage
+plot_class_distribution(y, "Distribution des classes - Après équilibrage")
+
+# === 4. Création du jeu bruité X2 à partir de X1
+noise = np.random.normal(0, 0.05, X1.shape)
+X1_noisy = X1 + noise
+X2 = pd.concat([X1, X1_noisy])
+y2 = pd.concat([y, y])
+
+# Affichage après ajout de bruit à tout le jeu équilibré
+plot_class_distribution(y2, "Distribution des classes - Après duplication avec bruit (X2)")
+
+
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score
+from sklearn.neural_network import MLPClassifier
+
+# Example test size proportions
+splits = [0.2, 0.3, 0.4]
+
+# Iterate through each test size
+for split in splits:
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X2, y2, test_size=split, random_state=42, stratify=y2)
+    
+    # Normalize the features
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+    
+    # Define and train the neural network model
+    model = MLPClassifier(hidden_layer_sizes=(100,), max_iter=300, alpha=0.0001, solver='adam', random_state=42, tol=1e-4)
+    model.fit(X_train, y_train)
+    
+    # Make predictions and evaluate the model
+    y_pred = model.predict(X_test)
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"Test size: {split}, Accuracy: {accuracy:.2f}")
+    #Why 42? The number 42 is an arbitrary choice and is often used as a reference to the book The Hitchhiker's Guide to the Galaxy, where 42 is "the answer to the ultimate question of life, the universe, and everything." It has become a convention in the programming and data science community.
+
+# Split the dataset with a fixed random state
+X_train, X_test, y_train, y_test = train_test_split(X2, y2, test_size=0.2, random_state=42)
+
+# Normalize the features
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+
+
+
+
+
+
+
+
 # Call the optimise_pls_cv function
 n_components = 20  # Adjust based on your dataset
 pls_model = optimise_pls_cv(X_train_scaled, y_train, n_components)
