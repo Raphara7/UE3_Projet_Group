@@ -74,11 +74,11 @@ fig.tight_layout()
 plt.show()
 
 # =========================
-# 2. Dérivées et dérivées secondes
+# 2. Derivatives and Second Derivatives
 # =========================
 plt.figure(figsize=(12, 12))
 
-# ---- Dérivées ----
+# ---- Derivatives ----
 plt.subplot(2, 1, 1)
 for i, cls in enumerate(classes):
     subset = data[data[class_column] == cls]
@@ -89,13 +89,13 @@ for i, (wavelength, value) in enumerate(zip(important_wavelengths, Values_wavele
     color = cmap(norm(value))
     plt.axvline(x=wavelength, color=color, linestyle='--', alpha=0.9, linewidth=2, label=f'{wavelength:.2f} nm' if i == 0 else "")
 
-plt.title("Dérivées des spectres")
-plt.xlabel("Longueur d'onde (nm)")
-plt.ylabel("Dérivée")
-plt.legend(title="Classe")
+plt.title("Spectral Derivatives")
+plt.xlabel("Wavelength (nm)")
+plt.ylabel("Derivative")
+plt.legend(title="Class")
 plt.grid(True)
 
-# ---- Dérivées secondes ----
+# ---- Second Derivatives ----
 plt.subplot(2, 1, 2)
 for i, cls in enumerate(classes):
     subset = data[data[class_column] == cls]
@@ -106,11 +106,12 @@ for i, (wavelength, value) in enumerate(zip(important_wavelengths, Values_wavele
     color = cmap(norm(value))
     plt.axvline(x=wavelength, color=color, linestyle='--', alpha=0.9, linewidth=2, label=f'{wavelength:.2f} nm' if i == 0 else "")
 
-plt.title("Dérivées secondes des spectres")
-plt.xlabel("Longueur d'onde (nm)")
-plt.ylabel("Dérivée seconde")
-plt.legend(title="Classe")
+plt.title("Second Derivatives of Spectra")
+plt.xlabel("Wavelength (nm)")
+plt.ylabel("Second Derivative")
+plt.legend(title="Class")
 plt.grid(True)
 
-plt.tight_layout()
+# Ajuster l'espacement vertical entre les sous-graphiques
+plt.subplots_adjust(hspace=0.5)  # Augmente l'espacement vertical
 plt.show()
