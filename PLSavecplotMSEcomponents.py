@@ -152,9 +152,9 @@ X_test = scaler.transform(X_test)
 
 # Call the optimise_pls_cv function
 n_components = 20  # Adjust based on your dataset
-pls_model = optimise_pls_cv(X_train_scaled, y_train, n_components)
+pls_model = optimise_pls_cv(X_train, y_train, n_components)
 
-def optimise_pls_cv(X, y, n_comp, plot_components=True):
+def optimise_pls_cv(X2, y2, n_comp, plot_components=True):
     '''Run PLS including a variable number of components, up to n_comp,
        and calculate MSE '''
 
@@ -165,9 +165,9 @@ def optimise_pls_cv(X, y, n_comp, plot_components=True):
         pls = PLSRegression(n_components=i)
 
         # Cross-validation
-        y_cv = cross_val_predict(pls, X, y, cv=10)
+        y_cv = cross_val_predict(pls, X2, y2, cv=10)
 
-        mse.append(mean_squared_error(y, y_cv))
+        mse.append(mean_squared_error(y2, y_cv))
 
         comp = 100 * (i + 1) / n_comp
         # Trick to update status on the same line
@@ -195,19 +195,19 @@ def optimise_pls_cv(X, y, n_comp, plot_components=True):
     pls_opt = PLSRegression(n_components=msemin + 1)
 
     # Fit to the entire dataset
-    pls_opt.fit(X, y)
-    y_c = pls_opt.predict(X)
+    pls_opt.fit(X2, y2)
+    y_c = pls_opt.predict(X2)
 
     # Cross-validation
-    y_cv = cross_val_predict(pls_opt, X, y, cv=10)
+    y_cv = cross_val_predict(pls_opt, X2, y2, cv=10)
 
     # Calculate scores for calibration and cross-validation
-    score_c = r2_score(y, y_c)
-    score_cv = r2_score(y, y_cv)
+    score_c = r2_score(y2, y_c)
+    score_cv = r2_score(y2, y_cv)
 
     # Calculate mean squared error for calibration and cross-validation
-    mse_c = mean_squared_error(y, y_c)
-    mse_cv = mean_squared_error(y, y_cv)
+    mse_c = mean_squared_error(y2, y_c)
+    mse_cv = mean_squared_error(y2, y_cv)
 
     print('R2 calib: %5.3f' % score_c)
     print('R2 CV: %5.3f' % score_cv)
@@ -215,18 +215,18 @@ def optimise_pls_cv(X, y, n_comp, plot_components=True):
     print('MSE CV: %5.3f' % mse_cv)
 
     # Plot regression and figures of merit
-    rangey = max(y) - min(y)
+    rangey = max(y2) - min(y2)
     rangex = max(y_c) - min(y_c)
 
     # Fit a line to the CV vs response
-    z = np.polyfit(y.flatten(), y_c.flatten(), 1)
+    z = np.polyfit(y2.flatten(), y_c.flatten(), 1)
     with plt.style.context(('ggplot')):
         fig, ax = plt.subplots(figsize=(9, 5))
-        ax.scatter(y_c, y, c='red', edgecolors='k')
+        ax.scatter(y_c, y2, c='red', edgecolors='k')
         # Plot the best fit line
-        ax.plot(np.polyval(z, y), y, c='blue', linewidth=1)
+        ax.plot(np.polyval(z, y2), y2, c='blue', linewidth=1)
         # Plot the ideal 1:1 line
-        ax.plot(y, y, color='green', linewidth=1)
+        ax.plot(y2, y2, color='green', linewidth=1)
         plt.title('$R^{2}$ (CV): ' + str(score_cv))
         plt.xlabel('Predicted')
         plt.ylabel('Measured')
@@ -237,4 +237,4 @@ def optimise_pls_cv(X, y, n_comp, plot_components=True):
 
 # Example usage with your dataset
 n_components = 20  # Adjust based on your dataset
-pls_model = optimise_pls_cv(X_train_scaled, y_train, n_components)
+pls_model = optimise_pls_cv(X_train, y_train, n_components)
